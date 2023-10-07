@@ -28,7 +28,7 @@ for i in ${!downloadFiles[@]}; do
             cp ./cache/${downloadFiles[$i]} ./assets/img/${localFiles[$i]}
             if [ $? -ne 0 ]; then 
                 # The command failed, print an error message 
-                echo "The download failed with exit status $?" 
+                echo "The file replacement failed with exit status $?" 
                 # Exit the script with a non-zero exit status to indicate failure 
                 exit 1
             else 
