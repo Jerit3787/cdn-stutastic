@@ -34,7 +34,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Prepare Pages
-        run: cp ./index.html ./_site && cp -r ./assets/ ./_site
+        run: cp ./index.html ./_site/ && cp -r ./assets/ ./_site/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
