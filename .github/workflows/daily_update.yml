@@ -32,14 +32,14 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4.0.0
 
-      - name: Add hosts entry for tgb.mrsm.edu.my (dynamic DNS lookup)
+      - name: Resolve tgb.mrsm.edu.my IP
         run: |
           IP=$(dig +short @dns1.gitn.net.my tgb.mrsm.edu.my A | tail -1)
           echo "Resolved tgb.mrsm.edu.my → $IP"
-          echo "$IP tgb.mrsm.edu.my" | sudo tee -a /etc/hosts
+          echo "SERVER_IP=$IP" >> $GITHUB_ENV
 
       - name: Run Script
-        run: sudo chmod +x ./scripts/main.sh && sudo ./scripts/main.sh
+        run: sudo chmod +x ./scripts/main.sh && sudo SERVER_IP=$SERVER_IP ./scripts/main.sh
 
       - name: Preparing commit title
         id: date

@@ -7,9 +7,18 @@ localFiles=("banner-2.jpg" "banner-3.jpg" "banner-4.jpg" "banner-5.jpg")
 
 sudo mkdir cache
 
+# Use the resolved IP directly if provided, otherwise fall back to hostname
+if [ -n "$SERVER_IP" ]; then
+    BASE_URL="http://$SERVER_IP/data/index/slider-1"
+    HOST_HEADER="--header=Host: tgb.mrsm.edu.my"
+else
+    BASE_URL="http://tgb.mrsm.edu.my/data/index/slider-1"
+    HOST_HEADER=""
+fi
+
 for i in ${!downloadFiles[@]}; do
     echo "Downloading file from the main server..."
-    sudo wget -q --timeout=30 --tries=3 -P ./cache http://tgb.mrsm.edu.my/data/index/slider-1/${downloadFiles[$i]}
+    sudo wget -q --timeout=30 --tries=3 $HOST_HEADER -P ./cache $BASE_URL/${downloadFiles[$i]}
     wget_exit=$?
 
     if [ $wget_exit -ne 0 ]; then 
