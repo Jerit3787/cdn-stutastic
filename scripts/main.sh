@@ -9,16 +9,15 @@ sudo mkdir cache
 
 for i in ${!downloadFiles[@]}; do
     echo "Downloading file from the main server..."
-    sudo wget -q -P ./cache http://tgb.mrsm.edu.my/data/index/slider-1/${downloadFiles[$i]}
+    sudo wget -q --timeout=30 --tries=3 -P ./cache http://tgb.mrsm.edu.my/data/index/slider-1/${downloadFiles[$i]}
+    wget_exit=$?
 
-    if [ $? -ne 0 ]; then 
+    if [ $wget_exit -ne 0 ]; then 
         # The command failed, print an error message 
-        echo "The download failed with exit status $?" 
-        # Exit the script with a non-zero exit status to indicate failure 
-        exit 1 
+        echo "The download failed with exit status $wget_exit. Skipping file ${downloadFiles[$i]}."
     else 
         # The command was successful, print a success message 
-        echo "The download succeeded with exit status $?" 
+        echo "The download succeeded with exit status $wget_exit"
 
         echo "Comparing file contents..."
         if cmp --silent -- "./cache/${downloadFiles[$i]}" "./assets/img/${localFiles[$i]}"; then
@@ -26,14 +25,15 @@ for i in ${!downloadFiles[@]}; do
         else
             echo "File content is not identical. Replacing files"
             cp ./cache/${downloadFiles[$i]} ./assets/img/${localFiles[$i]}
-            if [ $? -ne 0 ]; then 
+            cp_exit=$?
+            if [ $cp_exit -ne 0 ]; then 
                 # The command failed, print an error message 
-                echo "The file replacement failed with exit status $?" 
+                echo "The file replacement failed with exit status $cp_exit" 
                 # Exit the script with a non-zero exit status to indicate failure 
                 exit 1
             else 
             # The command was successful, print a success message 
-                echo -e "The file replacement succeeded with exit status $? \n\n" 
+                echo -e "The file replacement succeeded with exit status $cp_exit \n\n" 
             fi
         fi
     fi
