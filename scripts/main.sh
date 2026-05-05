@@ -20,7 +20,7 @@ fi
 
 for i in ${!downloadFiles[@]}; do
     echo "Downloading file from the main server..."
-    sudo wget -q --timeout=30 --tries=3 $HOST_HEADER -P ./cache $BASE_URL/${downloadFiles[$i]}
+    wget -q --timeout=30 --tries=3 $HOST_HEADER -P ./cache $BASE_URL/${downloadFiles[$i]}
     wget_exit=$?
 
     if [ $wget_exit -ne 0 ]; then 
