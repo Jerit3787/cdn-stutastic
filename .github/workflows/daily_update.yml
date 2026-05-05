@@ -34,12 +34,21 @@ jobs:
 
       - name: Resolve tgb.mrsm.edu.my IP
         run: |
-          IP=$(dig +short @dns1.gitn.net.my tgb.mrsm.edu.my A | tail -1)
-          echo "Resolved tgb.mrsm.edu.my → $IP"
+          # Try the GITN-specific DNS first, fall back to system DNS
+          IP=$(dig +short @dns1.gitn.net.my tgb.mrsm.edu.my A 2>/dev/null | grep -E '^[0-9]+\.' | tail -1)
+          if [ -z "$IP" ]; then
+            echo "GITN DNS lookup failed, falling back to system DNS..."
+            IP=$(dig +short tgb.mrsm.edu.my A 2>/dev/null | grep -E '^[0-9]+\.' | tail -1)
+          fi
+          echo "Resolved tgb.mrsm.edu.my → ${IP:-<empty>}"
           echo "SERVER_IP=$IP" >> $GITHUB_ENV
 
       - name: Run Script
-        run: sudo chmod +x ./scripts/main.sh && sudo SERVER_IP=$SERVER_IP ./scripts/main.sh
+        env:
+          SERVER_IP: ${{ env.SERVER_IP }}
+        run: |
+          chmod +x ./scripts/main.sh
+          sudo -E ./scripts/main.sh
 
       - name: Preparing commit title
         id: date

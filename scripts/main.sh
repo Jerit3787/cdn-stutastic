@@ -5,15 +5,17 @@ downloadFiles=("img-2.jpg" "img-3.jpg" "img-4.jpg" "img-5.jpg")
 
 localFiles=("banner-2.jpg" "banner-3.jpg" "banner-4.jpg" "banner-5.jpg")
 
-sudo mkdir cache
+mkdir -p cache
 
 # Use the resolved IP directly if provided, otherwise fall back to hostname
 if [ -n "$SERVER_IP" ]; then
     BASE_URL="http://$SERVER_IP/data/index/slider-1"
     HOST_HEADER="--header=Host: tgb.mrsm.edu.my"
+    echo "Using resolved IP: $SERVER_IP (BASE_URL: $BASE_URL)"
 else
     BASE_URL="http://tgb.mrsm.edu.my/data/index/slider-1"
     HOST_HEADER=""
+    echo "SERVER_IP not set, using hostname directly (BASE_URL: $BASE_URL)"
 fi
 
 for i in ${!downloadFiles[@]}; do
