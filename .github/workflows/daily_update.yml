@@ -43,6 +43,15 @@ jobs:
           echo "Resolved tgb.mrsm.edu.my → ${IP:-<empty>}"
           echo "SERVER_IP=$IP" >> $GITHUB_ENV
 
+      - name: Test connectivity to server
+        env:
+          SERVER_IP: ${{ env.SERVER_IP }}
+        run: |
+          echo "Testing connectivity to $SERVER_IP..."
+          curl -fsSL --connect-timeout 10 -H "Host: tgb.mrsm.edu.my" \
+            "http://$SERVER_IP/data/index/slider-1/img-2.jpg" -o /dev/null \
+            && echo "✅ Connectivity OK" || echo "❌ Cannot reach server"
+
       - name: Run Script
         env:
           SERVER_IP: ${{ env.SERVER_IP }}
