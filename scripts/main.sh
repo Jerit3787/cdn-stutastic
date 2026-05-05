@@ -10,17 +10,17 @@ mkdir -p cache
 # Use the resolved IP directly if provided, otherwise fall back to hostname
 if [ -n "$SERVER_IP" ]; then
     BASE_URL="http://$SERVER_IP/data/index/slider-1"
-    HOST_HEADER="--header=Host: tgb.mrsm.edu.my"
+    HOST_HEADER=("--header=Host: tgb.mrsm.edu.my")
     echo "Using resolved IP: $SERVER_IP (BASE_URL: $BASE_URL)"
 else
     BASE_URL="http://tgb.mrsm.edu.my/data/index/slider-1"
-    HOST_HEADER=""
+    HOST_HEADER=()
     echo "SERVER_IP not set, using hostname directly (BASE_URL: $BASE_URL)"
 fi
 
 for i in ${!downloadFiles[@]}; do
     echo "Downloading file from the main server..."
-    wget -q --timeout=30 --tries=3 $HOST_HEADER -P ./cache $BASE_URL/${downloadFiles[$i]}
+    wget -q --timeout=30 --tries=3 "${HOST_HEADER[@]}" -P ./cache $BASE_URL/${downloadFiles[$i]}
     wget_exit=$?
 
     if [ $wget_exit -ne 0 ]; then 
